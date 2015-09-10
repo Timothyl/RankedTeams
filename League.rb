@@ -1,7 +1,4 @@
 require 'httparty'
-require 'pry'
-require 'json'
-
 # require 'ap'
 class League
   include HTTParty
@@ -28,57 +25,15 @@ class League
   def self.match_history summoner_id
     get("/v2.2/matchhistory/#{summoner_id}")
   end
-
-  def self.get_roster_ids summoner, team_name
-    id = League.summoner_name(summoner)[summoner]['id'].to_s
-    summoners_teams = League.team(id)
-    team_index = summoners_teams[id].index{|team| team['name'] == team_name}
-    roster = summoners_teams[id][team_index]['roster']['memberList']
-    # player_ids = ""
-    player_ids_array = []
-    # binding.pry
-    roster.each do |player|
-      # player_ids << ',' << player["playerId"].to_s
-      player_ids_array << player["playerId"].to_s
-    end
-    # player_ids[0] = ""
-    player_ids_array
-
-  end
-
-  def self.get_roster_names summoner, team_name
-    id_array = League.get_roster_ids(summoner, team_name)
-    player_names = []
-    player_id_string = ""
-    id_array.each do |id|
-      player_id_string << ',' << id
-    end
-    player_id_string[0] = ""
-    players = summoner_id(player_id_string)
-    id_array.each do |player_id|
-      player_names << players[player_id]['name']
-    end
-    player_names
-  end
-
-  def self.match_info match_id
-    match = get("/v2.2/match/#{match_id}")
-    File.open('temp.json', 'w') do |f|
-      f.write(JSON.pretty_generate(match))
-    end
-  end
-
-
-
 end
 
-name = "thememan"
-summoner = League.summoner_name(name)
-id = summoner[name]["id"]
-history =  League.match_history(id)
-# puts history
-history = history["matches"][0]
-match = League.match_info(history['matchId'])
+# name = "thememan"
+# summoner = League.summoner_name(name)
+# id = summoner[name]["id"]
+# history =  League.match_history(id)
+# # puts history
+# history = history["matches"][0]
+# match = League.match_info(history['matchId'])
 # binding.pry
 # File.open('temp.json', 'w') do |f|
 #   f.write(JSON.pretty_generate(match))
