@@ -25,6 +25,10 @@ class League
     get("/v2.4/team/by-summoner/#{id}")
   end
 
+  def self.match_history summoner_id
+    get("/v2.2/matchhistory/#{summoner_id}")
+  end
+
   def self.get_roster_ids summoner, team_name
     id = League.summoner_name(summoner)[summoner]['id'].to_s
     summoners_teams = League.team(id)
@@ -57,12 +61,31 @@ class League
     player_names
   end
 
+  def self.match_info match_id
+    match = get("/v2.2/match/#{match_id}")
+    File.open('temp.json', 'w') do |f|
+      f.write(JSON.pretty_generate(match))
+    end
+  end
+
+
 
 end
 
+name = "thememan"
+summoner = League.summoner_name(name)
+id = summoner[name]["id"]
+history =  League.match_history(id)
+# puts history
+history = history["matches"][0]
+match = League.match_info(history['matchId'])
+# binding.pry
+# File.open('temp.json', 'w') do |f|
+#   f.write(JSON.pretty_generate(match))
+# end
 
-League.get_roster_ids('quidestpro', 'Hello Kitties On Crack')
-puts League.get_roster_names('quidestpro', 'Hello Kitties On Crack')
+# League.get_roster_ids('quidestpro', 'Hello Kitties On Crack')
+# puts League.get_roster_names('quidestpro', 'Hello Kitties On Crack')
 # binding.pry
 # File.open('temp.json', 'w') do |f|
 #   f.write(JSON.pretty_generate(summoners_teams[id][team_index]['roster']['memberList']))
