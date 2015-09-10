@@ -42,13 +42,21 @@ class Team
     player_names
   end
 
-  def match_info match_id
-    match = get("/v2.2/match/#{match_id}")
-    File.open('temp.json', 'w') do |f|
-      f.write(JSON.pretty_generate(match))
-    end
+  def get_recent_matches
+    match_history = team['matchHistory']
   end
+
 end
 
-t = Team.new('Quidestpro', 'Calypso')
-puts t.get_roster_names
+puts "Enter your summoner name:"
+summoner = gets.chomp
+puts "Enter your team name:"
+team = gets.chomp
+t = Team.new(summoner, team)
+match_history = t.get_recent_matches
+match = match_history[0]
+match_id = match['gameId']
+match_info = League.match_info(match_id)
+File.open('temp.json', 'w') do |f|
+  f.write(JSON.pretty_generate(match_info))
+end

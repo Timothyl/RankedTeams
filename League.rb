@@ -25,6 +25,10 @@ class League
   def self.match_history summoner_id
     get("/v2.2/matchhistory/#{summoner_id}")
   end
+
+  def self.match_info match_id
+    match = get("/v2.2/match/#{match_id}")
+  end
 end
 
 # name = "thememan"
